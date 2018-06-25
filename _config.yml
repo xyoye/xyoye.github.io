@@ -1,1 +1,13 @@
-theme: jekyll-theme-slate
+title: xyoye的个人博客
+email: 155452509@qq.com
+description: > # 乐于交流开发技术问题.
+baseurl: "" # https://xyoye.github.io/
+url: "" # 
+twitter_username: xyoye
+github_username:  xyoye
+
+# Build settings
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
