@@ -1,9 +1,5 @@
 # Android25 模拟器Root #
 
-作者：xyoye  
-联系方式：yeshao1997@outlook.com  
-时间：2018.6.1
-
 为了在模拟器上研究一个xposed项目不得不尝试对模拟器进行root，网上看了一些教程，在尝试之后发现总是没有权限去写入su文件，后面在stackflow看了一个回答，结合前面的经历，终于搞定了。
 
 ## 一、工具
@@ -83,4 +79,9 @@
 ## 检测权限
 最后，检验一下root权限，我的检验方法是下载一个es文件管理器，打开root工具箱，如果弹窗询问是否授予root权限，那就是OK了。
 
+##
 参考链接：[Root Android virtual device with Android 7.1.1](https://android.stackexchange.com/questions/171442/root-android-virtual-device-with-android-7-1-1)
+
+作者：xyoye  
+联系方式：yeshao1997@outlook.com  
+时间：2018.6.1
