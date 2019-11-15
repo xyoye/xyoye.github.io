@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>2018-6-1-Android25模拟器root | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Android25 模拟器Root为了在模拟器上研究一个xposed项目不得不尝试对模拟器进行root，网上看了一些教程，在尝试之后发现总是没有权限去写入su文件，后面在stackflow看了一个回答，结合前面的经历，终于搞定了。 一、工具需要准备的工具： 1、SuperSU app 2.82 2、SR5-SuperSU-v2.78.zip (密码：6phd)  3、Android Studio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2018-6-1-Android25模拟器root">
+<meta property="og:url" content="https:&#x2F;&#x2F;xyoye.github.io&#x2F;2019&#x2F;11&#x2F;16&#x2F;2018-6-1-Android25%E6%A8%A1%E6%8B%9F%E5%99%A8root&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Android25 模拟器Root为了在模拟器上研究一个xposed项目不得不尝试对模拟器进行root，网上看了一些教程，在尝试之后发现总是没有权限去写入su文件，后面在stackflow看了一个回答，结合前面的经历，终于搞定了。 一、工具需要准备的工具： 1、SuperSU app 2.82 2、SR5-SuperSU-v2.78.zip (密码：6phd)  3、Android Studio">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;i.imgur.com&#x2F;kbIJvBP.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;i.imgur.com&#x2F;KxpZky8.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;i.imgur.com&#x2F;Jzh8O6z.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;i.imgur.com&#x2F;MavZqVF.png">
+<meta property="og:updated_time" content="2019-11-15T17:56:51.904Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;i.imgur.com&#x2F;kbIJvBP.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xyoye.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2018-6-1-Android25模拟器root" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/16/2018-6-1-Android25%E6%A8%A1%E6%8B%9F%E5%99%A8root/" class="article-date">
+  <time datetime="2019-11-15T18:04:32.917Z" itemprop="datePublished">2019-11-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      2018-6-1-Android25模拟器root
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Android25-模拟器Root"><a href="#Android25-模拟器Root" class="headerlink" title="Android25 模拟器Root"></a>Android25 模拟器Root</h1><p>为了在模拟器上研究一个xposed项目不得不尝试对模拟器进行root，网上看了一些教程，在尝试之后发现总是没有权限去写入su文件，后面在stackflow看了一个回答，结合前面的经历，终于搞定了。</p>
+<h2 id="一、工具"><a href="#一、工具" class="headerlink" title="一、工具"></a>一、工具</h2><p>需要准备的工具：</p>
+<p>1、<a href="https://play.google.com/store/apps/details?id=eu.chainfire.supersu" target="_blank" rel="noopener">SuperSU app 2.82</a></p>
+<p>2、<a href="https://pan.baidu.com/s/1tgZCmefkPGSjq0kTP4ZF8g" target="_blank" rel="noopener">SR5-SuperSU-v2.78.zip (密码：6phd)</a> </p>
+<p>3、Android Studio 及 Android7.1.1的模拟器</p>
+<p>4、配好的adb环境变量 </p>
+<h2 id="二、流程"><a href="#二、流程" class="headerlink" title="二、流程"></a>二、流程</h2><h3 id="第一步"><a href="#第一步" class="headerlink" title="第一步"></a>第一步</h3><p>通过Android Studio打开模拟器，在模拟器中安装第一个软件SuperSu。<br>这个SuperSu就是用来授权的软件，安装后打不打开都无所谓，打开也不能用先。</p>
+<h3 id="第二步"><a href="#第二步" class="headerlink" title="第二步"></a>第二步</h3><p>到你的的sdk安装目录下打开tools文件夹，按住shift+鼠标右键选择：在此处打开命令窗口，打开终端后输入：emulator.exe –avd {你的模拟器名称} –writable-system</p>
+<p>例：emulator.exe –avd A25 –writable-system</p>
+<p><img src="https://i.imgur.com/kbIJvBP.png" alt=""></p>
+<p>输入之后显示如下，之后就不用管这个了终端了：</p>
+<p><img src="https://i.imgur.com/KxpZky8.png" alt=""></p>
+<h3 id="第三步"><a href="#第三步" class="headerlink" title="第三步"></a>第三步</h3><p>解压第二个文件后找到你模拟器对应的内核的文件夹，比如我的是x86的模拟器，就进入x86文件夹。复制路径。 打开Android Studio的Terminal。</p>
+<p>输入：</p>
+<pre><code>adb root
+adb remount</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/Jzh8O6z.png" alt=""></p>
+<p><strong>注意：输入后必须显示remount succeeded，否则没法进行下去了。要是失败了，点击模拟器电源键重启模拟器</strong></p>
+<h3 id="第四步"><a href="#第四步" class="headerlink" title="第四步"></a>第四步</h3><p>输入：</p>
+<pre><code>adb -e push 上面你复制的路径\su.pie /system/bin/su</code></pre><p>结果：</p>
+<p><img src="https://i.imgur.com/MavZqVF.png" alt=""></p>
+<p><strong>注意：如果出现说不能写入之类的情况，请重启。</strong></p>
+<p>另外经过测试，貌似不能写入是因为命令输入的太久了，重启模拟器后再快速输入一遍这三条命令就可以了</p>
+<h3 id="第五步"><a href="#第五步" class="headerlink" title="第五步"></a>第五步</h3><p>输入：</p>
+<pre><code>adb -e shell
+su root
+cd /system/bin
+chmod 06755 su
+su --install
+su --daemon
+setenforce 0</code></pre><p>结果：没有结果，就是正确的结果！</p>
+<p>如果输入完setenforce 0都没有问题的话，那么恭喜你，root成功了！要是输入过程中报错了，删了当前模拟器重来吧。</p>
+<h2 id="检测权限"><a href="#检测权限" class="headerlink" title="检测权限"></a>检测权限</h2><p>最后，检验一下root权限，我的检验方法是下载一个es文件管理器，打开root工具箱，如果弹窗询问是否授予root权限，那就是OK了。</p>
+<p>参考链接：<a href="https://android.stackexchange.com/questions/171442/root-android-virtual-device-with-android-7-1-1" target="_blank" rel="noopener">Root Android virtual device with Android 7.1.1</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xyoye.github.io/2019/11/16/2018-6-1-Android25%E6%A8%A1%E6%8B%9F%E5%99%A8root/" data-id="ck30gc7x70002usuv31ikhp4x" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/16/2018-4-18-Handler%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E6%BA%90%E7%A0%81/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          2018-4-18-Handler运行机制源码
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/16/2018-3-30-Glide4.6.1%E5%AD%A6%E4%B9%A0%E5%BF%83%E5%BE%97/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">2018-3-30-Glide4.6.1学习心得</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/16/2019-8-9-%E5%8F%8D%E7%BC%96%E8%AF%91%E3%80%81%E5%9B%9E%E7%BC%96%E8%AF%91%E3%80%81%E8%84%B1%E5%A3%B3%E7%9A%84%E7%AE%80%E5%8D%95%E6%B5%8B%E8%AF%95/">2019-8-9-反编译、回编译、脱壳的简单测试</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/16/2019-4-9-Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/">2019-4-9-Java垃圾收集算法</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/16/2019-7-25-%E5%85%B3%E4%BA%8E%E5%AE%9E%E7%8E%B0%E5%B1%80%E5%9F%9F%E7%BD%91%E5%86%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/">2019-7-25-关于实现局域网内视频播放</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/16/2019-3-3-%E9%98%BB%E6%AD%A2%E6%89%8B%E6%9C%BA%E6%81%AF%E5%B1%8F%E4%BC%91%E7%9C%A0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%B0%9D%E8%AF%95/">2019-3-3-阻止手机息屏休眠的一些尝试</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/16/2018-4-18-Handler%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E6%BA%90%E7%A0%81/">2018-4-18-Handler运行机制源码</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 xyoye<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

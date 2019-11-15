@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>2019-4-9-Java垃圾收集算法 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Java垃圾收集算法 首先需要了解垃圾标记算法 垃圾标记算法，内部分为两种算法：引用标记算法、根搜索算法  1）引用标记算法     标记对象的引用，当无引用时，即为垃圾。     缺点：在互相引用的时候会导致无法回收。  2）根搜索算法     选定根节点，相当于所有引用的祖先，当子节点失去与父节点的引用，则子节点间无论有多少引用，都无法到达根节点，即为垃圾。 Java内部垃圾回收主要采用：分代">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2019-4-9-Java垃圾收集算法">
+<meta property="og:url" content="https:&#x2F;&#x2F;xyoye.github.io&#x2F;2019&#x2F;11&#x2F;16&#x2F;2019-4-9-Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Java垃圾收集算法 首先需要了解垃圾标记算法 垃圾标记算法，内部分为两种算法：引用标记算法、根搜索算法  1）引用标记算法     标记对象的引用，当无引用时，即为垃圾。     缺点：在互相引用的时候会导致无法回收。  2）根搜索算法     选定根节点，相当于所有引用的祖先，当子节点失去与父节点的引用，则子节点间无论有多少引用，都无法到达根节点，即为垃圾。 Java内部垃圾回收主要采用：分代">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;xyoye&#x2F;xyoye.github.io&#x2F;master&#x2F;image&#x2F;2019-4-9&#x2F;%E6%A0%B9%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;xyoye&#x2F;xyoye.github.io&#x2F;master&#x2F;image&#x2F;2019-4-9&#x2F;%E6%A0%87%E8%AE%B0-%E6%B8%85%E9%99%A4%E7%AE%97%E6%B3%95.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;xyoye&#x2F;xyoye.github.io&#x2F;master&#x2F;image&#x2F;2019-4-9&#x2F;%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;xyoye&#x2F;xyoye.github.io&#x2F;master&#x2F;image&#x2F;2019-4-9&#x2F;%E6%A0%87%E8%AE%B0-%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;xyoye&#x2F;xyoye.github.io&#x2F;master&#x2F;image&#x2F;2019-4-9&#x2F;%E6%96%B0%E7%94%9F%E4%BB%A3%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86.png">
+<meta property="og:updated_time" content="2019-11-15T17:56:51.904Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;xyoye&#x2F;xyoye.github.io&#x2F;master&#x2F;image&#x2F;2019-4-9&#x2F;%E6%A0%B9%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xyoye.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2019-4-9-Java垃圾收集算法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/16/2019-4-9-Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/" class="article-date">
+  <time datetime="2019-11-15T18:04:32.933Z" itemprop="datePublished">2019-11-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      2019-4-9-Java垃圾收集算法
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Java垃圾收集算法</p>
+<p>首先需要了解垃圾标记算法</p>
+<pre><code>垃圾标记算法，内部分为两种算法：引用标记算法、根搜索算法
+
+1）引用标记算法
+    标记对象的引用，当无引用时，即为垃圾。
+    缺点：在互相引用的时候会导致无法回收。
+
+2）根搜索算法
+    选定根节点，相当于所有引用的祖先，当子节点失去与父节点的引用，则子节点间无论有多少引用，都无法到达根节点，即为垃圾。</code></pre><p><img src="https://raw.githubusercontent.com/xyoye/xyoye.github.io/master/image/2019-4-9/%E6%A0%B9%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95.png" alt="根搜索算法"></p>
+<p>Java内部垃圾回收主要采用：分代回收算法</p>
+<pre><code>内部包括：标记清除算法、复制算法、标记压缩算法
+
+1）标记清除算法
+    标记可清除的对象，回收标记的对象。
+    缺点：标记与回收效率不高，产生大量内存碎片，导致没有连续的内存分配给大对象，从而再次引起垃圾回收</code></pre><p><img src="https://raw.githubusercontent.com/xyoye/xyoye.github.io/master/image/2019-4-9/%E6%A0%87%E8%AE%B0-%E6%B8%85%E9%99%A4%E7%AE%97%E6%B3%95.png" alt="标记清除算法"></p>
+<pre><code>2）复制算法
+    将内存区域分为两半，每次只使用其中一半，在回收时，将使用的一半中存活对象复制到未使用的一半中（我更倾向于表达为移动），再回收使用的一半中可回收的对象。
+    缺点：将内存分为两半，直接减少了可使用的内存。</code></pre><p><img src="https://raw.githubusercontent.com/xyoye/xyoye.github.io/master/image/2019-4-9/%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95.png" alt="复制算法"></p>
+<pre><code>3）标记压缩算法
+    与标记清除算法类似，但是在回收标记对象后，将存活对象压缩到一端，将存活对象内存边缘外的对象回收。</code></pre><p><img src="https://raw.githubusercontent.com/xyoye/xyoye.github.io/master/image/2019-4-9/%E6%A0%87%E8%AE%B0-%E5%8E%8B%E7%BC%A9%E7%AE%97%E6%B3%95.png" alt="标记压缩算法"></p>
+<p>分代回收算法中将内存区域划分为新生代、老年代以及永久代(jdk8后取消了永久代，取而代之的是元空间)，其中新生代又细分为三部分：Eden、Form Survivor、To Survivor。</p>
+<pre><code>eden与两个survivor的比例大致为1:8
+
+根据分代的堆区划分了两种垃圾回收器：
+1）Minor Collection : 新生代垃圾回收器
+2）Full Collection ： 又称Majjor Collection，对新生代、老年代(Full Collection扫描不到元空间）。相对于另一个垃圾回收器，它收集频率较低，耗时较长。
+
+执行Full Collection时，采用的是标记压缩算法
+执行Minor Collection时，采用的是复制算法
+1）Eden存活对象 -&gt; To Survivor
+2）Form Survivor存活对象 -&gt; To Survivor 或 永久代
+3）将Form Survivor区域与To Survivor区域对调</code></pre><p><img src="https://raw.githubusercontent.com/xyoye/xyoye.github.io/master/image/2019-4-9/%E6%96%B0%E7%94%9F%E4%BB%A3%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86.png" alt="新生代垃圾回收"></p>
+<pre><code>从From Survivor复制对象到永久代的条件为：
+1）存活的对象的分代年龄超过-XX:MaxTenuringThreshold（用于控制对象经历多少次Minor GC才晋升到老年代）。
+2）To Survivor空间容量达到阈值。</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xyoye.github.io/2019/11/16/2019-4-9-Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/" data-id="ck30gc7xf0004usuv65mc2xa5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/16/2019-8-9-%E5%8F%8D%E7%BC%96%E8%AF%91%E3%80%81%E5%9B%9E%E7%BC%96%E8%AF%91%E3%80%81%E8%84%B1%E5%A3%B3%E7%9A%84%E7%AE%80%E5%8D%95%E6%B5%8B%E8%AF%95/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          2019-8-9-反编译、回编译、脱壳的简单测试
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/16/2019-7-25-%E5%85%B3%E4%BA%8E%E5%AE%9E%E7%8E%B0%E5%B1%80%E5%9F%9F%E7%BD%91%E5%86%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">2019-7-25-关于实现局域网内视频播放</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/16/2019-8-9-%E5%8F%8D%E7%BC%96%E8%AF%91%E3%80%81%E5%9B%9E%E7%BC%96%E8%AF%91%E3%80%81%E8%84%B1%E5%A3%B3%E7%9A%84%E7%AE%80%E5%8D%95%E6%B5%8B%E8%AF%95/">2019-8-9-反编译、回编译、脱壳的简单测试</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/16/2019-4-9-Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/">2019-4-9-Java垃圾收集算法</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/16/2019-7-25-%E5%85%B3%E4%BA%8E%E5%AE%9E%E7%8E%B0%E5%B1%80%E5%9F%9F%E7%BD%91%E5%86%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/">2019-7-25-关于实现局域网内视频播放</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/16/2019-3-3-%E9%98%BB%E6%AD%A2%E6%89%8B%E6%9C%BA%E6%81%AF%E5%B1%8F%E4%BC%91%E7%9C%A0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%B0%9D%E8%AF%95/">2019-3-3-阻止手机息屏休眠的一些尝试</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/16/2018-4-18-Handler%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E6%BA%90%E7%A0%81/">2018-4-18-Handler运行机制源码</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 xyoye<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

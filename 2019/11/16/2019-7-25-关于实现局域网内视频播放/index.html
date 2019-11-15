@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>2019-7-25-关于实现局域网内视频播放 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="关于实现局域网内视频播放在我开源的APP 弹弹play 概念版 中实现了局域网视频播放的功能，所以将相关功能抽离出来写了个Demo，并写了这篇介绍相关内容的文章。 Demo地址：https:&#x2F;&#x2F;github.com&#x2F;xyoye&#x2F;SmbPlayHelper 一、简述 需要实现局域网内视频播放，首要条件是能从局域网文件中拿到InputStream(A)，这里局域网内文件浏览的库推荐使用jcifs-ng">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2019-7-25-关于实现局域网内视频播放">
+<meta property="og:url" content="https:&#x2F;&#x2F;xyoye.github.io&#x2F;2019&#x2F;11&#x2F;16&#x2F;2019-7-25-%E5%85%B3%E4%BA%8E%E5%AE%9E%E7%8E%B0%E5%B1%80%E5%9F%9F%E7%BD%91%E5%86%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="关于实现局域网内视频播放在我开源的APP 弹弹play 概念版 中实现了局域网视频播放的功能，所以将相关功能抽离出来写了个Demo，并写了这篇介绍相关内容的文章。 Demo地址：https:&#x2F;&#x2F;github.com&#x2F;xyoye&#x2F;SmbPlayHelper 一、简述 需要实现局域网内视频播放，首要条件是能从局域网文件中拿到InputStream(A)，这里局域网内文件浏览的库推荐使用jcifs-ng">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;xyoye&#x2F;xyoye.github.io&#x2F;master&#x2F;image&#x2F;2019-7-25&#x2F;%E8%8E%B7%E5%8F%96%E6%9C%AC%E5%9C%B0%E6%8E%A5%E5%8F%A3IP.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;xyoye&#x2F;xyoye.github.io&#x2F;master&#x2F;image&#x2F;2019-7-25&#x2F;%E5%88%9B%E5%BB%BAServerSocket.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;xyoye&#x2F;xyoye.github.io&#x2F;master&#x2F;image&#x2F;2019-7-25&#x2F;%E6%8E%A5%E6%94%B6%E8%AF%B7%E6%B1%82.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;xyoye&#x2F;xyoye.github.io&#x2F;master&#x2F;image&#x2F;2019-7-25&#x2F;%E5%93%8D%E5%BA%94%E5%A4%B4%E6%9E%84%E5%BB%BA.png">
+<meta property="og:updated_time" content="2019-11-15T17:56:51.904Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;xyoye&#x2F;xyoye.github.io&#x2F;master&#x2F;image&#x2F;2019-7-25&#x2F;%E8%8E%B7%E5%8F%96%E6%9C%AC%E5%9C%B0%E6%8E%A5%E5%8F%A3IP.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xyoye.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2019-7-25-关于实现局域网内视频播放" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/11/16/2019-7-25-%E5%85%B3%E4%BA%8E%E5%AE%9E%E7%8E%B0%E5%B1%80%E5%9F%9F%E7%BD%91%E5%86%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/" class="article-date">
+  <time datetime="2019-11-15T18:04:32.933Z" itemprop="datePublished">2019-11-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      2019-7-25-关于实现局域网内视频播放
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="关于实现局域网内视频播放"><a href="#关于实现局域网内视频播放" class="headerlink" title="关于实现局域网内视频播放"></a>关于实现局域网内视频播放</h1><p>在我开源的APP <a href="https://github.com/xyoye/DanDanPlayForAndroid" target="_blank" rel="noopener">弹弹play 概念版</a> 中实现了局域网视频播放的功能，所以将相关功能抽离出来写了个Demo，并写了这篇介绍相关内容的文章。</p>
+<p>Demo地址：<a href="https://github.com/xyoye/SmbPlayHelper" target="_blank" rel="noopener">https://github.com/xyoye/SmbPlayHelper</a></p>
+<h2 id="一、简述"><a href="#一、简述" class="headerlink" title="一、简述"></a>一、简述</h2><ol>
+<li><p>需要实现局域网内视频播放，首要条件是能从局域网文件中拿到InputStream(A)，这里局域网内文件浏览的库推荐使用<a href="https://github.com/AgNO3/jcifs-ng" target="_blank" rel="noopener">jcifs-ng</a>或<a href="https://github.com/hierynomus/smbj" target="_blank" rel="noopener">smbj</a>，介绍中Demo使用的是jcifs-ng。</p>
+</li>
+<li><p>由于普通播放器一般不能直接设置InputStream(A)作为播放源，但是播放器大都是能播放http链接的视频，所以转换一下思路，通过创建本地服务端接收播放器的http请求，将InputStream(A)内数据写回播放器，以此实现播放。</p>
+</li>
+</ol>
+<h2 id="二、功能实现"><a href="#二、功能实现" class="headerlink" title="二、功能实现"></a>二、功能实现</h2><h3 id="一、创建ServerSocket"><a href="#一、创建ServerSocket" class="headerlink" title="一、创建ServerSocket"></a>一、创建ServerSocket</h3><ol>
+<li><p>获取本地可用的网络接口从中拿到IP。</p>
+<p> <img src="https://raw.githubusercontent.com/xyoye/xyoye.github.io/master/image/2019-7-25/%E8%8E%B7%E5%8F%96%E6%9C%AC%E5%9C%B0%E6%8E%A5%E5%8F%A3IP.png" alt="获取本地网络接口"></p>
+</li>
+<li><p>设置端口，创建ServerSocket。</p>
+<p> <img src="https://raw.githubusercontent.com/xyoye/xyoye.github.io/master/image/2019-7-25/%E5%88%9B%E5%BB%BAServerSocket.png" alt="创建ServerSocket"></p>
+</li>
+<li><p>所以在接收到请求后，会得到一个Socket，在新线程中处理该Sockt。</p>
+<p> <img src="https://raw.githubusercontent.com/xyoye/xyoye.github.io/master/image/2019-7-25/%E6%8E%A5%E6%94%B6%E8%AF%B7%E6%B1%82.png" alt="接收请求"></p>
+</li>
+</ol>
+<h3 id="二、处理Socket"><a href="#二、处理Socket" class="headerlink" title="二、处理Socket"></a>二、处理Socket</h3><ol>
+<li><p>通过从Socket中拿到InputStream(B)，将其转换为BufferedInputStream。</p>
+</li>
+<li><p>从BufferedInputStream中读出请求头信息，主要是读取其中的Range信息，Range的作用是在创建返回体Resonpse时确定返回数据具体的位置。（一般只需要处理”n-“、”-n”、”n-m”这三种格式就可以了）</p>
+</li>
+</ol>
+<h3 id="三、返回Response"><a href="#三、返回Response" class="headerlink" title="三、返回Response"></a>三、返回Response</h3><ol>
+<li><p>拿到Range后需要做相关检验，比如range范围是否超出文件等。</p>
+</li>
+<li><p>返回Response响应头<br> <img src="https://raw.githubusercontent.com/xyoye/xyoye.github.io/master/image/2019-7-25/%E5%93%8D%E5%BA%94%E5%A4%B4%E6%9E%84%E5%BB%BA.png" alt="响应头构建"></p>
+</li>
+<li><p>将局域网文件的InputStream(A)调整至range开始的位置，再从InputStream按块读取数据，将数据通过Socket的OutputStream写回播放器。</p>
+</li>
+</ol>
+<pre><code>OutputStream outputStream = httpSocket.getOutputStream();
+//响应头
+outputStream.write(response.getResponseHeader().getBytes());
+//必须返回！！！
+outputStream.write(&quot;\r\n&quot;.getBytes());
+...
+InputStream inputStream = response.getContentInputStream();
+//跳转至contentOffset
+inputStream.skip(contentOffset);
+...
+//读数据
+int readLen = inputStream.read(readBuffer, 0, (int) readSize);
+while (readLen &gt; 0 &amp;&amp; readTotalSize &lt; contentLength) {
+    //写回数据
+    outputStream.write(readBuffer, 0, readLen);
+    outputStream.flush();
+    ...
+}
+outputStream.flush();</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xyoye.github.io/2019/11/16/2019-7-25-%E5%85%B3%E4%BA%8E%E5%AE%9E%E7%8E%B0%E5%B1%80%E5%9F%9F%E7%BD%91%E5%86%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/" data-id="ck30gc7xn0005usuv1970fk15" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/11/16/2019-4-9-Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          2019-4-9-Java垃圾收集算法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/11/16/2019-3-3-%E9%98%BB%E6%AD%A2%E6%89%8B%E6%9C%BA%E6%81%AF%E5%B1%8F%E4%BC%91%E7%9C%A0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%B0%9D%E8%AF%95/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">2019-3-3-阻止手机息屏休眠的一些尝试</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/16/2019-8-9-%E5%8F%8D%E7%BC%96%E8%AF%91%E3%80%81%E5%9B%9E%E7%BC%96%E8%AF%91%E3%80%81%E8%84%B1%E5%A3%B3%E7%9A%84%E7%AE%80%E5%8D%95%E6%B5%8B%E8%AF%95/">2019-8-9-反编译、回编译、脱壳的简单测试</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/16/2019-4-9-Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/">2019-4-9-Java垃圾收集算法</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/16/2019-7-25-%E5%85%B3%E4%BA%8E%E5%AE%9E%E7%8E%B0%E5%B1%80%E5%9F%9F%E7%BD%91%E5%86%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/">2019-7-25-关于实现局域网内视频播放</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/16/2019-3-3-%E9%98%BB%E6%AD%A2%E6%89%8B%E6%9C%BA%E6%81%AF%E5%B1%8F%E4%BC%91%E7%9C%A0%E7%9A%84%E4%B8%80%E4%BA%9B%E5%B0%9D%E8%AF%95/">2019-3-3-阻止手机息屏休眠的一些尝试</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/16/2018-4-18-Handler%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6%E6%BA%90%E7%A0%81/">2018-4-18-Handler运行机制源码</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 xyoye<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
