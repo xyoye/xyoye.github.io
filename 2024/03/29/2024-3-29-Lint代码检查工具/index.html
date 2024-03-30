@@ -1,0 +1,362 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Lint代码检查工具 | xyoye</title><meta name="author" content="xyoye"><meta name="copyright" content="xyoye"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Lint代码检查工具背景在每个项目的开发过程中，或多或少都会存在一些属于项目自身的或通用的规定，它们的存在可能是为了规范代码，可能是为了避免某些BUG，也可能是因为特殊需求而不得不做的妥协。这些规则会被写在注释里、写在README里，亦或者被口口相传，然后很有可能在某一天被某一个新来的小伙子忽略并演变为线上BUG。 为了避免这种情况，我们需要更明显的提示。它需要覆盖范围广，在项目内编写的代码都应该">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lint代码检查工具">
+<meta property="og:url" content="https://xyoye.github.io/2024/03/29/2024-3-29-Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/index.html">
+<meta property="og:site_name" content="xyoye">
+<meta property="og:description" content="Lint代码检查工具背景在每个项目的开发过程中，或多或少都会存在一些属于项目自身的或通用的规定，它们的存在可能是为了规范代码，可能是为了避免某些BUG，也可能是因为特殊需求而不得不做的妥协。这些规则会被写在注释里、写在README里，亦或者被口口相传，然后很有可能在某一天被某一个新来的小伙子忽略并演变为线上BUG。 为了避免这种情况，我们需要更明显的提示。它需要覆盖范围广，在项目内编写的代码都应该">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xyoye.github.io/img/posts/Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/cover.jpeg">
+<meta property="article:published_time" content="2024-03-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-30T09:14:43.416Z">
+<meta property="article:author" content="xyoye">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xyoye.github.io/img/posts/Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/cover.jpeg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://xyoye.github.io/2024/03/29/2024-3-29-Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'mediumZoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Lint代码检查工具',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-30 17:14:43'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/posts/Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/cover.jpeg')"><nav id="nav"><span id="blog-info"><a href="/" title="xyoye"><span class="site-name">xyoye</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Lint代码检查工具</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-03-28T16:00:00.000Z" title="发表于 2024-03-29 00:00:00">2024-03-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-30T09:14:43.416Z" title="更新于 2024-03-30 17:14:43">2024-03-30</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Lint代码检查工具"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Lint代码检查工具"><a href="#Lint代码检查工具" class="headerlink" title="Lint代码检查工具"></a>Lint代码检查工具</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在每个项目的开发过程中，或多或少都会存在一些属于项目自身的或通用的规定，它们的存在可能是为了规范代码，可能是为了避免某些BUG，也可能是因为特殊需求而不得不做的妥协。这些规则会被写在注释里、写在README里，亦或者被口口相传，然后很有可能在某一天被某一个新来的小伙子忽略并演变为线上BUG。</p>
+<p>为了避免这种情况，我们需要更明显的提示。它需要覆盖范围广，在项目内编写的代码都应该能被检测到。它需要具有即时性，当代码写下的时，警告应该立刻出现。它具有需要强制性，在编译时或者代码提交时，如果检查到异常可以中断编译或禁止提交。那么，我们可以试试Lint。</p>
+<h2 id="Lint介绍"><a href="#Lint介绍" class="headerlink" title="Lint介绍"></a>Lint介绍</h2><p>Lint是Android Studio提供一个代码扫描和检查工具。Android Studio本身就自带了许多的Lint规则以帮助开发者规范的进行代码编写，同时它也开放了接口，开发者可以自定义Lint规则用于管理项目中不符合预期的代码。</p>
+<p><img src="/img/posts/Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/system_lint.jpeg" alt="image"></p>
+<h3 id="主要API"><a href="#主要API" class="headerlink" title="主要API"></a>主要API</h3><ul>
+<li><p>Issue：表示一个Lint规则。</p>
+</li>
+<li><p>Detector：用于检测并报告代码中的Issue，每个Issue都要指定Detector。</p>
+</li>
+<li><p>Scope：声明Detector要扫描的代码范围，一个Issue可包含一到多个Scope。</p>
+</li>
+<li><p>Scanner：用于扫描并发现代码中的Issue，每个Detector可以实现一到多个Scanner。</p>
+</li>
+<li><p>IssueRegistry：Lint规则加载的入口，提供要检查的Issue列表。</p>
+</li>
+</ul>
+<h3 id="规则实现步骤"><a href="#规则实现步骤" class="headerlink" title="规则实现步骤"></a>规则实现步骤</h3><ul>
+<li><p>创建用于放置检测逻辑Java模块</p>
+</li>
+<li><p>创建Detector类，并实现Scanner相关接口</p>
+</li>
+<li><p>创建Issue类，并指定扫描范围Scope与关联的Detector</p>
+</li>
+<li><p>创建IssueRegistry类，注册Issue</p>
+</li>
+<li><p>创建META-INF配置，在其中添加IssueRegistry</p>
+</li>
+<li><p>在Detector类中，实现代码检查与Issue上报逻辑</p>
+</li>
+</ul>
+<h3 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h3><ul>
+<li><p>通过Jar的形式，将Java模块编译为Jar，将Jar放置在~&#x2F;.android&#x2F;lint目录下</p>
+</li>
+<li><p>通过依赖模块或者依赖AAR的形式，通过LintCheck形式集成检查模块，在此模块下，Lint规则都会生效</p>
+</li>
+</ul>
+<h2 id="开发实践"><a href="#开发实践" class="headerlink" title="开发实践"></a>开发实践</h2><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><p>在使用Moshi作为Json解析库时，如果作为数据解析类的DataClass，部分变量没有设置默认值，且当解析的Json没返回该字段，解析就会出现异常。但在实际开发中，服务端会返回怎样的数据是不确定，作为客户端的我们应该秉持着防御性编程的思想，对程序逻辑进行充分考虑和完善，因此就这里而言，我们应该为每一个变量设置默认值。</p>
+<p>那么这里就是一个小小的一个约定了，为了使开发这个项目的小伙伴都能遵守这个约定，我们现在准备编写一个简单的规则：所有带有@JsonAdapter注解的DataClass，其变量都必须设置默认值。否则Android Studio应该报错误警告。</p>
+<h3 id="编写规则"><a href="#编写规则" class="headerlink" title="编写规则"></a>编写规则</h3><h4 id="新建Java模块"><a href="#新建Java模块" class="headerlink" title="新建Java模块"></a>新建Java模块</h4><p>创建java模块，并在build.gradle.kts中完成lint相关设置</p>
+<pre><code>plugins &#123;
+    ...
+    // 引入lint插件
+    alias(libs.plugins.android.lint)
+&#125;
+
+// 设置lint输出规则
+lint &#123;
+    htmlReport = true
+    htmlOutput = file(&quot;lint-report.html&quot;)
+    textReport = true
+    absolutePaths = false
+    ignoreTestSources = true
+&#125;
+
+dependencies &#123;
+    // 集成lint api
+    compileOnly(libs.lint.api)
+    ...
+&#125;
+</code></pre>
+<h4 id="创建Issue"><a href="#创建Issue" class="headerlink" title="创建Issue"></a>创建Issue</h4><pre><code>val SET_DEFAULT_VALUE: Issue = Issue.create(
+        // 唯一标识，利用Java注解或者XML属性进行屏蔽时，使用的就是这个id
+        id = &quot;DataClassDefaultValue&quot;,
+        // 简短描述
+        briefDescription = &quot;Data类构造函数中的变量应设置默认值&quot;,
+        // 详细描述
+        explanation = &quot;&quot;&quot;
+                    使用了Moshi的JsonClass注解的Data类，都被视为用于json解析的数据类，为保证\
+                    数据解析正常，请为构造函数中的每个变量都设置默认值。
+                    &quot;&quot;&quot;,
+        // 问题分类
+        category = Category.CORRECTNESS,
+        // 问题等级
+        priority = 7,
+        // 问题严重程度
+        severity = Severity.ERROR,
+        // 实现类
+        implementation = Implementation(
+            DataClassDetector::class.java,
+            Scope.JAVA_FILE_SCOPE
+        )
+    )
+</code></pre>
+<h4 id="注册Issue"><a href="#注册Issue" class="headerlink" title="注册Issue"></a>注册Issue</h4><p>新建继承于IssueRegistry的类，实现父类的抽象方法</p>
+<pre><code>class DataClassIssueRegistry : IssueRegistry() &#123;
+    override val issues = listOf(DataClassIssue.SET_DEFAULT_VALUE)
+
+    override val api: Int get() = CURRENT_API
+
+    override val minApi: Int get() = 8
+
+    override val vendor: Vendor = Vendor(
+        vendorName = &quot;XX Project&quot;,
+        feedbackUrl = &quot;https://github.com/xx/xxProject/issues&quot;,
+        contact = &quot;https://github.com/xx/xxProject&quot;
+    )
+&#125;
+</code></pre>
+<p>在模块内新建文件com.android.tools.lint.client.api.IssueRegistry，其在模块内的路径为src&#x2F;main&#x2F;resources&#x2F;META-INF&#x2F;services，在文件中声明自定义的注册类</p>
+<pre><code>com.xyoye.lint.checks.DataClassIssueRegistry
+</code></pre>
+<h4 id="实现检测逻辑"><a href="#实现检测逻辑" class="headerlink" title="实现检测逻辑"></a>实现检测逻辑</h4><pre><code>class DataClassDetector : Detector(), Detector.UastScanner &#123;
+
+    override fun getApplicableUastTypes(): List&lt;Class&lt;UClass&gt;&gt; = listOf(UClass::class.java)
+
+    override fun createUastHandler(context: JavaContext) = object : UElementHandler() &#123;
+        
+        override fun visitClass(node: UClass) &#123;
+            val ktClass = node.javaPsi
+            // 只检测Kotlin的Class
+            if (ktClass !is KtUltraLightClass) &#123;
+                return
+            &#125;
+            // 只检测Data Class
+            if (ktClass.kotlinOrigin.isData().not()) &#123;
+                return
+            &#125;
+            // 只检测JsonClass注解的Data Class
+            if (ktClass.annotations.none &#123; it.qualifiedName == &quot;com.squareup.moshi.JsonClass&quot; &#125;) &#123;
+                return
+            &#125;
+            // 检测构造函数
+            val ktConstructors = ktClass.constructors.filterIsInstance&lt;KtLightMethod&gt;()
+            if (ktConstructors.isEmpty()) &#123;
+                return
+            &#125;
+            // 检测每个构造函数
+            ktConstructors.onEach &#123;
+                val ktParameterList = it.parameterList as? KtLightParameterList ?: return@onEach
+                val ktParameters = ktParameterList.parameters.filterIsInstance&lt;KtLightParameter&gt;()
+                if (ktParameters.isEmpty()) &#123;
+                    return
+                &#125;
+
+                // 检测每个参数
+                ktParameters.onEach onParameterEach@&#123; parameter -&gt;
+                    val ktParameter = parameter.kotlinOrigin ?: return@onParameterEach
+                    if (ktParameter.hasDefaultValue().not()) &#123;
+                        context.report(
+                            issue = DataClassIssue.SET_DEFAULT_VALUE,
+                            scopeClass = node,
+                            location = context.getNameLocation(parameter),
+                            message = &quot;变量 $&#123;parameter.name&#125; 不符合规范，请为其设置默认值！&quot;
+                        )
+                    &#125;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h3 id="使用Lint规则"><a href="#使用Lint规则" class="headerlink" title="使用Lint规则"></a>使用Lint规则</h3><h4 id="新建测试数据类"><a href="#新建测试数据类" class="headerlink" title="新建测试数据类"></a>新建测试数据类</h4><p>在名为data的模块下新建测试的DataClass</p>
+<pre><code>@JsonClass(generateAdapter = true)
+data class TestJsonBean(
+    val id: Int,
+    val name: String = &quot;&quot;,
+)
+</code></pre>
+<h4 id="集成Lint规则模块"><a href="#集成Lint规则模块" class="headerlink" title="集成Lint规则模块"></a>集成Lint规则模块</h4><p>在data模块，集成Lint规则模块</p>
+<pre><code>dependencies &#123;
+    lintChecks(project(&quot;:lint_checks&quot;))
+&#125;
+</code></pre>
+<h4 id="执行检查命令"><a href="#执行检查命令" class="headerlink" title="执行检查命令"></a>执行检查命令</h4><pre><code>./gradlew :data:lint
+</code></pre>
+<h3 id="Lint规则效果"><a href="#Lint规则效果" class="headerlink" title="Lint规则效果"></a>Lint规则效果</h3><h4 id="命令执行报错"><a href="#命令执行报错" class="headerlink" title="命令执行报错"></a>命令执行报错</h4><pre><code>&gt; Task :data:lintReportDebug
+Wrote HTML report to file:///xxx/data/build/reports/lint-results-debug.html
+
+&gt; Task :data:lintDebug FAILED
+/xxx/data/src/main/kotlin/xxxx/TestJsonBean.kt:7: Error: 变量 id 不符合规范，请为其设置默认值！ [DataClassDefaultValue]
+    val id: Int,
+        ~~
+
+    Explanation for issues of type &quot;DataClassDefaultValue&quot;:
+    使用了Moshi的JsonClass注解的Data类，都被视为用于json解析的数据类，为保证数据解析正常，请为构造函数中的每个变量都设置默认值。
+
+    Vendor: XX Project
+    Contact: &quot;https://github.com/xx/xxProject&quot;
+    Feedback: https://github.com/xx/xxProject/issues
+
+1 errors, 0 warnings
+
+FAILURE: Build failed with an exception.
+</code></pre>
+<h4 id="html文档"><a href="#html文档" class="headerlink" title="html文档"></a>html文档</h4><p><img src="/img/posts/Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/lint_report_html.jpeg" alt="image"></p>
+<h4 id="代码效果"><a href="#代码效果" class="headerlink" title="代码效果"></a>代码效果</h4><ul>
+<li>代码效果</li>
+</ul>
+<p><img src="/img/posts/Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/android_studio_display.jpeg" alt="image"></p>
+<ul>
+<li>鼠标悬停效果</li>
+</ul>
+<p><img src="/img/posts/Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/android_studio_display_more.png" alt="image"></p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>Lint工具针对特定问题时有非常好的效果，例如发现一些语言或API层面比较明确的低级错误、帮助进行代码规范的约束，特别是有新人参与开发时，能减少代码规范和项目约定的沟通成本。在后续的开发中，可以增加对一些类的使用规范，如定义一个项目内唯一的Log、Taost，在检查到其它Log、Toast工具被使用时提示警告，以达到工具使用的统一。另外也可以在Git仓库增加CI&#x2F;CD规则，当代码提交或创建MR时，执行一次Lint检查，如果出现异常就阻止提交。</p>
+<p>最后，工具始终是次要的，重要的是开发者，我们要了解异常、重视异常、避免异常。</p>
+<h2 id="五、参考资料"><a href="#五、参考资料" class="headerlink" title="五、参考资料"></a>五、参考资料</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://developer.android.com/studio/write/lint">Android Studio | Improve your code with lint checks</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://googlesamples.github.io/android-custom-lint-rules/api-guide.html">Google Simple | Android Lint API Guide</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://tech.meituan.com/2018/04/13/waimai-android-lint.html">美团 | Android Lint代码检查实践</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://tech.meituan.com/2017/03/09/android-custom-lint2.html">美团 | Android自定义Lint实践2——改进原生Detector</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.wanandroid.com/blog/show/2665">Wan Android | Android自定义Lint实践（Custom Lint Rules &amp; Lint Plugin）</a></p>
+</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://xyoye.github.io">xyoye</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://xyoye.github.io/2024/03/29/2024-3-29-Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/">https://xyoye.github.io/2024/03/29/2024-3-29-Lint代码检查工具/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://xyoye.github.io" target="_blank">xyoye</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/posts/Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/cover.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/12/27/2020-12-27-ExoPlayer%E7%BC%96%E8%AF%91FFMpeg%E9%9F%B3%E9%A2%91%E6%89%A9%E5%B1%95/" title="编译ExoPlayer FFmpeg扩展"><img class="cover" src="/img/posts/ExoPlayer%E7%BC%96%E8%AF%91FFMpeg%E9%9F%B3%E9%A2%91%E6%89%A9%E5%B1%95/cover.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">编译ExoPlayer FFmpeg扩展</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">xyoye</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xyoye"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xyoye" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="/xyoye1997@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">暂无公告</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7"><span class="toc-number">1.</span> <span class="toc-text">Lint代码检查工具</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">1.1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Lint%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.</span> <span class="toc-text">Lint介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81API"><span class="toc-number">1.2.1.</span> <span class="toc-text">主要API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%84%E5%88%99%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.2.2.</span> <span class="toc-text">规则实现步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="toc-number">1.2.3.</span> <span class="toc-text">使用方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5"><span class="toc-number">1.3.</span> <span class="toc-text">开发实践</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87"><span class="toc-number">1.3.1.</span> <span class="toc-text">目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E8%A7%84%E5%88%99"><span class="toc-number">1.3.2.</span> <span class="toc-text">编写规则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0%E5%BB%BAJava%E6%A8%A1%E5%9D%97"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">新建Java模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAIssue"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">创建Issue</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E5%86%8CIssue"><span class="toc-number">1.3.2.3.</span> <span class="toc-text">注册Issue</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%A3%80%E6%B5%8B%E9%80%BB%E8%BE%91"><span class="toc-number">1.3.2.4.</span> <span class="toc-text">实现检测逻辑</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8Lint%E8%A7%84%E5%88%99"><span class="toc-number">1.3.3.</span> <span class="toc-text">使用Lint规则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0%E5%BB%BA%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E7%B1%BB"><span class="toc-number">1.3.3.1.</span> <span class="toc-text">新建测试数据类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9B%86%E6%88%90Lint%E8%A7%84%E5%88%99%E6%A8%A1%E5%9D%97"><span class="toc-number">1.3.3.2.</span> <span class="toc-text">集成Lint规则模块</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E6%A3%80%E6%9F%A5%E5%91%BD%E4%BB%A4"><span class="toc-number">1.3.3.3.</span> <span class="toc-text">执行检查命令</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lint%E8%A7%84%E5%88%99%E6%95%88%E6%9E%9C"><span class="toc-number">1.3.4.</span> <span class="toc-text">Lint规则效果</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%8A%A5%E9%94%99"><span class="toc-number">1.3.4.1.</span> <span class="toc-text">命令执行报错</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#html%E6%96%87%E6%A1%A3"><span class="toc-number">1.3.4.2.</span> <span class="toc-text">html文档</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%95%88%E6%9E%9C"><span class="toc-number">1.3.4.3.</span> <span class="toc-text">代码效果</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.</span> <span class="toc-text">四、总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">1.5.</span> <span class="toc-text">五、参考资料</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/03/29/2024-3-29-Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/" title="Lint代码检查工具"><img src="/img/posts/Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/cover.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Lint代码检查工具"/></a><div class="content"><a class="title" href="/2024/03/29/2024-3-29-Lint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7/" title="Lint代码检查工具">Lint代码检查工具</a><time datetime="2024-03-28T16:00:00.000Z" title="发表于 2024-03-29 00:00:00">2024-03-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/27/2020-12-27-ExoPlayer%E7%BC%96%E8%AF%91FFMpeg%E9%9F%B3%E9%A2%91%E6%89%A9%E5%B1%95/" title="编译ExoPlayer FFmpeg扩展"><img src="/img/posts/ExoPlayer%E7%BC%96%E8%AF%91FFMpeg%E9%9F%B3%E9%A2%91%E6%89%A9%E5%B1%95/cover.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="编译ExoPlayer FFmpeg扩展"/></a><div class="content"><a class="title" href="/2020/12/27/2020-12-27-ExoPlayer%E7%BC%96%E8%AF%91FFMpeg%E9%9F%B3%E9%A2%91%E6%89%A9%E5%B1%95/" title="编译ExoPlayer FFmpeg扩展">编译ExoPlayer FFmpeg扩展</a><time datetime="2020-12-26T16:00:00.000Z" title="发表于 2020-12-27 00:00:00">2020-12-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2019/08/09/2019-8-9-%E5%8F%8D%E7%BC%96%E8%AF%91%E3%80%81%E5%9B%9E%E7%BC%96%E8%AF%91%E3%80%81%E8%84%B1%E5%A3%B3%E7%9A%84%E7%AE%80%E5%8D%95%E6%B5%8B%E8%AF%95/" title="反编译、回编译、脱壳的简单测试"><img src="/img/posts/%E5%8F%8D%E7%BC%96%E8%AF%91%E3%80%81%E5%9B%9E%E7%BC%96%E8%AF%91%E3%80%81%E8%84%B1%E5%A3%B3%E7%9A%84%E7%AE%80%E5%8D%95%E6%B5%8B%E8%AF%95/cover.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="反编译、回编译、脱壳的简单测试"/></a><div class="content"><a class="title" href="/2019/08/09/2019-8-9-%E5%8F%8D%E7%BC%96%E8%AF%91%E3%80%81%E5%9B%9E%E7%BC%96%E8%AF%91%E3%80%81%E8%84%B1%E5%A3%B3%E7%9A%84%E7%AE%80%E5%8D%95%E6%B5%8B%E8%AF%95/" title="反编译、回编译、脱壳的简单测试">反编译、回编译、脱壳的简单测试</a><time datetime="2019-08-08T16:00:00.000Z" title="发表于 2019-08-09 00:00:00">2019-08-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2019/07/25/2019-7-25-%E5%85%B3%E4%BA%8E%E5%AE%9E%E7%8E%B0%E5%B1%80%E5%9F%9F%E7%BD%91%E5%86%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/" title="关于实现局域网内视频播放"><img src="/img/posts/%E5%85%B3%E4%BA%8E%E5%AE%9E%E7%8E%B0%E5%B1%80%E5%9F%9F%E7%BD%91%E5%86%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/cover.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="关于实现局域网内视频播放"/></a><div class="content"><a class="title" href="/2019/07/25/2019-7-25-%E5%85%B3%E4%BA%8E%E5%AE%9E%E7%8E%B0%E5%B1%80%E5%9F%9F%E7%BD%91%E5%86%85%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/" title="关于实现局域网内视频播放">关于实现局域网内视频播放</a><time datetime="2019-07-24T16:00:00.000Z" title="发表于 2019-07-25 00:00:00">2019-07-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2019/04/09/2019-4-9-Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/" title="Java垃圾收集算法"><img src="/img/posts/Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/cover.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Java垃圾收集算法"/></a><div class="content"><a class="title" href="/2019/04/09/2019-4-9-Java%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/" title="Java垃圾收集算法">Java垃圾收集算法</a><time datetime="2019-04-08T16:00:00.000Z" title="发表于 2019-04-09 00:00:00">2019-04-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By xyoye</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script><div class="js-pjax"></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/canvas-nest.min.js"></script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-show-text.min.js" data-mobile="false" data-text="X,Y,O,Y,E" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
